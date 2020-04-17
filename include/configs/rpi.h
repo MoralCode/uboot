@@ -117,14 +117,29 @@
 #define CONFIG_SYS_CBSIZE 1024
 #define CONFIG_SYS_PBSIZE (CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
 
-/* File Updates */
+/* File updates */
 #ifdef CONFIG_UPDATE_KUBOS
 #define CONFIG_SYS_DFU_DATA_BUF_SIZE 500 * SZ_1K /* File transfer chunk size */
-#define CONFIG_SYS_DFU_MAX_FILE_SIZE 4 * SZ_1M   /* Maximum size for a single file.  Currently kernel (~2.5M) */
+#define CONFIG_SYS_DFU_MAX_FILE_SIZE 4 * SZ_1M   /* Maximum size for a single file.  Currently zImage (~2.5M) */
 
 #define KUBOS_UPGRADE_DEVICE 0
-#define KUBOS_UPGRADE_PART 1
-#define KUBOS_UPGRADE_STORAGE CONFIG_SYS_LOAD_ADDR /* Temporary SDRAM storage location */
+#define KUBOS_UPGRADE_PART 7
+#define KUBOS_UPGRADE_STORAGE CONFIG_SYS_SDRAM_BASE + 0x200 /* Temporary SDRAM storage location */
+
+/* DFU Configuration */
+#define DFU_ALT_INFO_MMC                                                                                               \
+    "dfu_alt_info_mmc="                                                                                                \
+    "kernel fat 0 5;"                                                                                                  \
+    "rootfs part 0 6\0"
+
+#define DFU_ALT_INFO_NOR                                                                                               \
+    "dfu_alt_info_nor="                                                                                                \
+    "uboot raw 0xA000 0x56000;"                                                                                        \
+    "dtb raw 0x70000 0x10000"                                                                                          \
+    "\0"
+#else
+#define DFU_ALT_INFO_MMC ""
+#define DFU_ALT_INFO_NOR ""
 #endif
 
 /* Environment */
@@ -204,32 +219,27 @@
 #define BOOT_TARGET_DEVICES(func) func(MMC, mmc, 0) func(USB, usb, 0) func(PXE, pxe, na) func(DHCP, dhcp, na)
 #include <config_distro_bootcmd.h>
 
-#define CONFIG_EXTRA_ENV_SETTINGS                                                                                      \
-    DEFAULT_LINUX_BOOT_ENV                                                                                             \
-    "boot_dev=0\0"                                                                                                     \
-    "mmcdev=0\0"                                                                                                       \
-    "mmcrootfstype=ext4 rootwait\0"                                                                                    \
-    "finduuid=part uuid mmc ${bootpart} uuid\0"                                                                        \
-    "args_mmc=run finduuid;setenv bootargs console=${console} "                                                        \
-    "${optargs} "                                                                                                      \
-    "root=PARTUUID=${uuid} ro "                                                                                        \
-    "rootfstype=${mmcrootfstype}\0"                                                                                    \
-    "bootfile=kernel\0"                                                                                                \
-    "console=ttyS0,115200\0"                                                                                           \
-    "optargs=\0"                                                                                                       \
-    "loadimage=fatload mmc ${mmcdev}:1 ${loadaddr} /${bootfile}\0"                                                     \
-    "loadfdt=fatload mmc ${mmcdev}:1 ${fdtaddr} /${board}.dtb\0"                                                       \
-    "mmcloados=run args_mmc; "                                                                                         \
-    "if run loadfdt; then "                                                                                            \
-    "bootm ${loadaddr} - ${fdtaddr}; "                                                                                 \
-    "else "                                                                                                            \
-    "echo ERROR: Failed to load ${board}.dtb; "                                                                        \
-    "fi;\0"                                                                                                            \
-    "mmcboot=mmc dev ${mmcdev}; "                                                                                      \
+#define CONFIG_BOOTCOMMAND                                                                                             \
     "if mmc rescan; then "                                                                                             \
-    "echo SD/MMC found on device ${mmcdev};"                                                                           \
-    "if run loadimage; then "                                                                                          \
-    "run mmcloados;"                                                                                                   \
-    "fi;"                                                                                                              \
-    "fi;\0" NETARGS BOOTENV KUBOS_UPDATE_ARGS
+    "run mmc_boot; "                                                                                                   \
+    "else "                                                                                                            \
+    "echo ERROR: Failed to boot. Unable to communicate with SD card; "                                                 \
+    "fi;"
+
+/* Define the initial console connection and rootfs location */
+#define CONFIG_BOOTARGS                                                                                                \
+    "console=ttyS0,115200 "                                                                                            \
+    "root=/dev/mmcblk0p6 rootwait"
+
+/* (bootstrap + u-boot + dtb (+ altOS) in flash) + (env + linux in mmc) */
+/* Copy .dtb file (NORFLASH @ 0x70000, size = 0x10000) and kernel (SD card, partition 5) into SDRAM, then boot them */
+#define MMC_BOOT                                                                                                       \
+    "mmc_boot=cp.b 0x10070000 0x21800000 0x10000; "                                                                    \
+    "fatload mmc 0:5 0x2187FF58 kernel; "                                                                              \
+    "bootm 0x2187FF58 - 0x21800000\0"
+
+#define CONFIG_EXTRA_ENV_SETTINGS                                                                                      \
+    MMC_BOOT                                                                                                           \
+    KUBOS_UPDATE_ARGS
+
 #endif
