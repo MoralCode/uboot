@@ -7,8 +7,8 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
-#include <linux/sizes.h>
 #include <asm/arch/timer.h>
+#include <linux/sizes.h>
 
 #if defined(CONFIG_TARGET_RPI_2) || defined(CONFIG_TARGET_RPI_3_32B)
 #define CONFIG_SKIP_LOWLEVEL_INIT
@@ -20,9 +20,8 @@
 
 /* Use SoC timer for AArch32, but architected timer for AArch64 */
 #ifndef CONFIG_ARM64
-#define CONFIG_SYS_TIMER_RATE		1000000
-#define CONFIG_SYS_TIMER_COUNTER	\
-	(&((struct bcm2835_timer_regs *)BCM2835_TIMER_PHYSADDR)->clo)
+#define CONFIG_SYS_TIMER_RATE 1000000
+#define CONFIG_SYS_TIMER_COUNTER (&((struct bcm2835_timer_regs *)BCM2835_TIMER_PHYSADDR)->clo)
 #endif
 
 /*
@@ -37,32 +36,30 @@
  * is DT.
  */
 #ifdef CONFIG_BCM2835
-#define CONFIG_MACH_TYPE		MACH_TYPE_BCM2708
+#define CONFIG_MACH_TYPE MACH_TYPE_BCM2708
 #endif
 
 /* Memory layout */
-#define CONFIG_NR_DRAM_BANKS		1
-#define CONFIG_SYS_SDRAM_BASE		0x00000000
+#define CONFIG_NR_DRAM_BANKS 1
+#define CONFIG_SYS_SDRAM_BASE 0x00000000
 #ifdef CONFIG_ARM64
-#define CONFIG_SYS_TEXT_BASE		0x00080000
+#define CONFIG_SYS_TEXT_BASE 0x00080000
 #else
-#define CONFIG_SYS_TEXT_BASE		0x00008000
+#define CONFIG_SYS_TEXT_BASE 0x00008000
 #endif
-#define CONFIG_SYS_UBOOT_BASE		CONFIG_SYS_TEXT_BASE
+#define CONFIG_SYS_UBOOT_BASE CONFIG_SYS_TEXT_BASE
 /*
  * The board really has 256M. However, the VC (VideoCore co-processor) shares
  * the RAM, and uses a configurable portion at the top. We tell U-Boot that a
  * smaller amount of RAM is present in order to avoid stomping on the area
  * the VC uses.
  */
-#define CONFIG_SYS_SDRAM_SIZE		SZ_128M
-#define CONFIG_SYS_INIT_SP_ADDR		(CONFIG_SYS_SDRAM_BASE + \
-					 CONFIG_SYS_SDRAM_SIZE - \
-					 GENERATED_GBL_DATA_SIZE)
-#define CONFIG_SYS_MALLOC_LEN		SZ_4M
-#define CONFIG_SYS_MEMTEST_START	0x00100000
-#define CONFIG_SYS_MEMTEST_END		0x00200000
-#define CONFIG_LOADADDR			0x00200000
+#define CONFIG_SYS_SDRAM_SIZE SZ_128M
+#define CONFIG_SYS_INIT_SP_ADDR (CONFIG_SYS_SDRAM_BASE + CONFIG_SYS_SDRAM_SIZE - GENERATED_GBL_DATA_SIZE)
+#define CONFIG_SYS_MALLOC_LEN SZ_4M
+#define CONFIG_SYS_MEMTEST_START 0x00100000
+#define CONFIG_SYS_MEMTEST_END 0x00200000
+#define CONFIG_LOADADDR 0x00200000
 
 /* Flash */
 #define CONFIG_SYS_NO_FLASH
@@ -73,16 +70,16 @@
 /* LCD */
 #define CONFIG_LCD
 #define CONFIG_LCD_DT_SIMPLEFB
-#define LCD_BPP				LCD_COLOR16
+#define LCD_BPP LCD_COLOR16
 /*
  * Prevent allocation of RAM for FB; the real FB address is queried
  * dynamically from the VideoCore co-processor, and comes from RAM
  * not owned by the ARM CPU.
  */
-#define CONFIG_FB_ADDR			0
+#define CONFIG_FB_ADDR 0
 #define CONFIG_VIDEO_BCM2835
 #define CONFIG_SYS_WHITE_ON_BLACK
-#define CONFIG_CONSOLE_SCROLL_LINES	10
+#define CONFIG_CONSOLE_SCROLL_LINES 10
 
 /* SD/MMC configuration */
 #define CONFIG_GENERIC_MMC
@@ -113,29 +110,38 @@
 #else
 #define CONFIG_PL01X_SERIAL
 #endif
-#define CONFIG_CONS_INDEX		0
-#define CONFIG_BAUDRATE			115200
+#define CONFIG_CONS_INDEX 0
+#define CONFIG_BAUDRATE 115200
 
 /* Console configuration */
-#define CONFIG_SYS_CBSIZE		1024
-#define CONFIG_SYS_PBSIZE		(CONFIG_SYS_CBSIZE +		\
-					 sizeof(CONFIG_SYS_PROMPT) + 16)
+#define CONFIG_SYS_CBSIZE 1024
+#define CONFIG_SYS_PBSIZE (CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
+
+/* File Updates */
+#ifdef CONFIG_UPDATE_KUBOS
+#define CONFIG_SYS_DFU_DATA_BUF_SIZE 500 * SZ_1K /* File transfer chunk size */
+#define CONFIG_SYS_DFU_MAX_FILE_SIZE 4 * SZ_1M   /* Maximum size for a single file.  Currently kernel (~2.5M) */
+
+#define KUBOS_UPGRADE_DEVICE 0
+#define KUBOS_UPGRADE_PART 1
+#define KUBOS_UPGRADE_STORAGE CONFIG_SYS_LOAD_ADDR /* Temporary SDRAM storage location */
+#endif
 
 /* Environment */
-#define CONFIG_ENV_SIZE			SZ_16K
+#define CONFIG_ENV_SIZE SZ_16K
 #define CONFIG_ENV_IS_IN_FAT
-#define FAT_ENV_INTERFACE		"mmc"
-#define FAT_ENV_DEVICE_AND_PART		"0:1"
-#define FAT_ENV_FILE			"uboot.env"
+#define FAT_ENV_INTERFACE "mmc"
+#define FAT_ENV_DEVICE_AND_PART "0:1"
+#define FAT_ENV_FILE "uboot.env"
 #define CONFIG_FAT_WRITE
 #define CONFIG_ENV_VARS_UBOOT_CONFIG
-#define CONFIG_SYS_LOAD_ADDR		0x1000000
+#define CONFIG_SYS_LOAD_ADDR 0x1000000
 #define CONFIG_CONSOLE_MUX
 #define CONFIG_SYS_CONSOLE_IS_IN_ENV
-#define CONFIG_PREBOOT			"usb start"
+#define CONFIG_PREBOOT "usb start"
 
 /* Shell */
-#define CONFIG_SYS_MAXARGS		16
+#define CONFIG_SYS_MAXARGS 16
 #define CONFIG_COMMAND_HISTORY
 
 /* Commands */
@@ -151,10 +157,10 @@
 
 /* Environment */
 #define CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
-#define ENV_DEVICE_SETTINGS \
-	"stdin=serial,usbkbd\0" \
-	"stdout=serial,lcd\0" \
-	"stderr=serial,lcd\0"
+#define ENV_DEVICE_SETTINGS                                                                                            \
+    "stdin=serial,usbkbd\0"                                                                                            \
+    "stdout=serial,lcd\0"                                                                                              \
+    "stderr=serial,lcd\0"
 
 /*
  * Memory layout for where various images get loaded by boot scripts:
@@ -186,27 +192,44 @@
  * ramdisk_addr_r simply shouldn't overlap anything else. Choosing 33M allows
  *   for any boot script to be up to 1M, which is hopefully plenty.
  */
-#define ENV_MEM_LAYOUT_SETTINGS \
-	"fdt_high=ffffffff\0" \
-	"initrd_high=ffffffff\0" \
-	"fdt_addr_r=0x00000100\0" \
-	"pxefile_addr_r=0x00100000\0" \
-	"kernel_addr_r=0x01000000\0" \
-	"scriptaddr=0x02000000\0" \
-	"ramdisk_addr_r=0x02100000\0" \
+#define ENV_MEM_LAYOUT_SETTINGS                                                                                        \
+    "fdt_high=ffffffff\0"                                                                                              \
+    "initrd_high=ffffffff\0"                                                                                           \
+    "fdt_addr_r=0x00000100\0"                                                                                          \
+    "pxefile_addr_r=0x00100000\0"                                                                                      \
+    "kernel_addr_r=0x01000000\0"                                                                                       \
+    "scriptaddr=0x02000000\0"                                                                                          \
+    "ramdisk_addr_r=0x02100000\0"
 
-#define BOOT_TARGET_DEVICES(func) \
-	func(MMC, mmc, 0) \
-	func(USB, usb, 0) \
-	func(PXE, pxe, na) \
-	func(DHCP, dhcp, na)
+#define BOOT_TARGET_DEVICES(func) func(MMC, mmc, 0) func(USB, usb, 0) func(PXE, pxe, na) func(DHCP, dhcp, na)
 #include <config_distro_bootcmd.h>
 
-#define CONFIG_EXTRA_ENV_SETTINGS \
-	"dhcpuboot=usb start; dhcp u-boot.uimg; bootm\0" \
-	ENV_DEVICE_SETTINGS \
-	ENV_MEM_LAYOUT_SETTINGS \
-	BOOTENV
-
-
+#define CONFIG_EXTRA_ENV_SETTINGS                                                                                      \
+    DEFAULT_LINUX_BOOT_ENV                                                                                             \
+    "boot_dev=0\0"                                                                                                     \
+    "mmcdev=0\0"                                                                                                       \
+    "mmcrootfstype=ext4 rootwait\0"                                                                                    \
+    "finduuid=part uuid mmc ${bootpart} uuid\0"                                                                        \
+    "args_mmc=run finduuid;setenv bootargs console=${console} "                                                        \
+    "${optargs} "                                                                                                      \
+    "root=PARTUUID=${uuid} ro "                                                                                        \
+    "rootfstype=${mmcrootfstype}\0"                                                                                    \
+    "bootfile=kernel\0"                                                                                                \
+    "console=ttyS0,115200\0"                                                                                           \
+    "optargs=\0"                                                                                                       \
+    "loadimage=fatload mmc ${mmcdev}:1 ${loadaddr} /${bootfile}\0"                                                     \
+    "loadfdt=fatload mmc ${mmcdev}:1 ${fdtaddr} /${board}.dtb\0"                                                       \
+    "mmcloados=run args_mmc; "                                                                                         \
+    "if run loadfdt; then "                                                                                            \
+    "bootm ${loadaddr} - ${fdtaddr}; "                                                                                 \
+    "else "                                                                                                            \
+    "echo ERROR: Failed to load ${board}.dtb; "                                                                        \
+    "fi;\0"                                                                                                            \
+    "mmcboot=mmc dev ${mmcdev}; "                                                                                      \
+    "if mmc rescan; then "                                                                                             \
+    "echo SD/MMC found on device ${mmcdev};"                                                                           \
+    "if run loadimage; then "                                                                                          \
+    "run mmcloados;"                                                                                                   \
+    "fi;"                                                                                                              \
+    "fi;\0" NETARGS BOOTENV KUBOS_UPDATE_ARGS
 #endif
