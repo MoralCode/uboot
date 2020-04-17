@@ -7,6 +7,7 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+#include "kubos-common.h"
 #include <asm/arch/timer.h>
 #include <linux/sizes.h>
 
