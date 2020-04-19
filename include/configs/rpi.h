@@ -154,7 +154,7 @@
 #define CONFIG_SYS_LOAD_ADDR 0x1000000
 #define CONFIG_CONSOLE_MUX
 #define CONFIG_SYS_CONSOLE_IS_IN_ENV
-#define CONFIG_PREBOOT "usb start"
+// #define CONFIG_PREBOOT "usb start"
 
 /* Shell */
 #define CONFIG_SYS_MAXARGS 16
@@ -174,9 +174,9 @@
 /* Environment */
 #define CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
 #define ENV_DEVICE_SETTINGS                                                                                            \
-    "stdin=serial,usbkbd\0"                                                                                            \
-    "stdout=serial,lcd\0"                                                                                              \
-    "stderr=serial,lcd\0"
+    "stdin=serial\0"                                                                                                   \
+    "stdout=serial\0"                                                                                                  \
+    "stderr=serial\0"
 
 /*
  * Memory layout for where various images get loaded by boot scripts:
@@ -235,9 +235,10 @@
 /* (bootstrap + u-boot + dtb (+ altOS) in flash) + (env + linux in mmc) */
 /* Copy .dtb file (NORFLASH @ 0x70000, size = 0x10000) and kernel (SD card, partition 5) into SDRAM, then boot them */
 #define MMC_BOOT                                                                                                       \
-    "mmc_boot=cp.b 0x10070000 0x21800000 0x10000; "                                                                    \
-    "fatload mmc 0:5 0x2187FF58 kernel; "                                                                              \
-    "bootm 0x2187FF58 - 0x21800000\0"
+    "mmc dev 0; "                                                                                                      \
+    "fatload mmc 0:1 ${fdt_addr_r} bcm2708-rpi-b-plus.dtb; "                                                           \
+    "fatload mmc 0:1 ${kernel_addr_r} kernel; "                                                                        \
+    "bootm ${kernel_addr_r} - ${fdt_addr_r}\0"
 
 #define CONFIG_EXTRA_ENV_SETTINGS                                                                                      \
     MMC_BOOT                                                                                                           \
