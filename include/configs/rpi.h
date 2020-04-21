@@ -241,6 +241,7 @@
     "bootm ${kernel_addr_r} - ${fdt_addr_r}\0"
 
 #define CONFIG_EXTRA_ENV_SETTINGS                                                                                      \
+    ENV_MEM_LAYOUT_SETTINGS                                                                                            \
     MMC_BOOT                                                                                                           \
     KUBOS_UPDATE_ARGS
 
