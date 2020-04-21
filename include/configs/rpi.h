@@ -147,7 +147,7 @@
 #define CONFIG_ENV_SIZE SZ_16K
 #define CONFIG_ENV_IS_IN_FAT
 #define FAT_ENV_INTERFACE "mmc"
-#define FAT_ENV_DEVICE_AND_PART "0:1"
+#define FAT_ENV_DEVICE_AND_PART "0:3"
 #define FAT_ENV_FILE "uboot.env"
 #define CONFIG_FAT_WRITE
 #define CONFIG_ENV_VARS_UBOOT_CONFIG
@@ -229,13 +229,13 @@
 
 /* Define the initial console connection and rootfs location */
 #define CONFIG_BOOTARGS                                                                                                \
-    "console=ttyS0,115200 "                                                                                            \
-    "root=/dev/mmcblk0p6 rootwait"
+    "console=ttyAMA0,115200 "                                                                                          \
+    "root=/dev/mmcblk0p2 rootwait"
 
 /* (bootstrap + u-boot + dtb (+ altOS) in flash) + (env + linux in mmc) */
 /* Copy .dtb file (NORFLASH @ 0x70000, size = 0x10000) and kernel (SD card, partition 5) into SDRAM, then boot them */
 #define MMC_BOOT                                                                                                       \
-    "mmc dev 0; "                                                                                                      \
+    "mmc_boot=mmc dev 0; "                                                                                             \
     "fatload mmc 0:1 ${fdt_addr_r} bcm2708-rpi-b-plus.dtb; "                                                           \
     "fatload mmc 0:1 ${kernel_addr_r} kernel; "                                                                        \
     "bootm ${kernel_addr_r} - ${fdt_addr_r}\0"
