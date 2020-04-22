@@ -145,11 +145,11 @@
 
 /* Environment */
 #define CONFIG_ENV_SIZE SZ_16K
-#define CONFIG_ENV_IS_IN_FAT
-#define FAT_ENV_INTERFACE "mmc"
-#define FAT_ENV_DEVICE_AND_PART "0:3"
-#define FAT_ENV_FILE "uboot.env"
-#define CONFIG_FAT_WRITE
+#define CONFIG_EXT4_WRITE
+#define CONFIG_ENV_IS_IN_EXT4 1
+#define EXT4_ENV_INTERFACE "mmc"
+#define EXT4_ENV_DEVICE_AND_PART "0:3"
+#define EXT4_ENV_FILE "/uboot.env"
 #define CONFIG_ENV_VARS_UBOOT_CONFIG
 #define CONFIG_SYS_LOAD_ADDR 0x1000000
 #define CONFIG_CONSOLE_MUX
