@@ -236,7 +236,7 @@
 /* Copy .dtb file (NORFLASH @ 0x70000, size = 0x10000) and kernel (SD card, partition 5) into SDRAM, then boot them */
 #define MMC_BOOT                                                                                                       \
     "mmc_boot=mmc dev 0; "                                                                                             \
-    "fatload mmc 0:1 ${fdt_addr_r} bcm2708-rpi-b-plus.dtb; "                                                           \
+    "fatload mmc 0:1 ${fdt_addr_r} bcm2708-rpi-zero.dtb; "                                                             \
     "fatload mmc 0:1 ${kernel_addr_r} kernel; "                                                                        \
     "bootm ${kernel_addr_r} - ${fdt_addr_r}\0"
 
