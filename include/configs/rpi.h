@@ -25,6 +25,9 @@
 #define CONFIG_SYS_TIMER_COUNTER (&((struct bcm2835_timer_regs *)BCM2835_TIMER_PHYSADDR)->clo)
 #endif
 
+#undef DFU_ALT_INFO_MMC
+#undef DFU_ALT_INFO_NOR
+
 /*
  * 2835 is a SKU in a series for which the 2708 is the first or primary SoC,
  * so 2708 has historically been used rather than a dedicated 2835 ID.
@@ -128,13 +131,7 @@
 #define KUBOS_UPGRADE_STORAGE CONFIG_SYS_SDRAM_BASE + 0x200 /* Temporary SDRAM storage location */
 
 /* DFU Configuration */
-#define DFU_ALT_INFO_MMC                                                                                               \
-    "dfu_alt_info_mmc="                                                                                                \
-    "rootfs part 0 2;"                                                                                                 \
-    "kernel fat 0 5;"                                                                                                  \
-    "uboot fat 0 5;"                                                                                                   \
-    "bcm2708-rpi-zero.dtb fat 0 1"                                                                                     \
-    "\0"
+#define DFU_ALT_INFO_MMC ""
 #define DFU_ALT_INFO_NOR ""
 #else
 #define DFU_ALT_INFO_MMC ""
