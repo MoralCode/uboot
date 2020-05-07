@@ -124,15 +124,15 @@
 #define CONFIG_SYS_DFU_MAX_FILE_SIZE 4 * SZ_1M   /* Maximum size for a single file.  Currently zImage (~2.5M) */
 
 #define KUBOS_UPGRADE_DEVICE 0
-#define KUBOS_UPGRADE_PART 5
+#define KUBOS_UPGRADE_PART 1
 #define KUBOS_UPGRADE_STORAGE CONFIG_SYS_SDRAM_BASE + 0x200 /* Temporary SDRAM storage location */
 
 /* DFU Configuration */
 #define DFU_ALT_INFO_MMC                                                                                               \
     "dfu_alt_info_mmc="                                                                                                \
-    "kernel fat 0 1;"                                                                                                  \
     "rootfs part 0 2;"                                                                                                 \
-    "uboot fat 0 1;"                                                                                                   \
+    "kernel fat 0 5;"                                                                                                  \
+    "uboot fat 0 5;"                                                                                                   \
     "bcm2708-rpi-zero.dtb fat 0 1"                                                                                     \
     "\0"
 #define DFU_ALT_INFO_NOR ""
