@@ -28,6 +28,9 @@
 #undef DFU_ALT_INFO_MMC
 #undef DFU_ALT_INFO_NOR
 
+#define CONFIG_SDHCI_CMD_DEFAULT_TIMEOUT 500
+#define CONFIG_SDHCI_CMD_MAX_TIMEOUT 10000
+
 /*
  * 2835 is a SKU in a series for which the 2708 is the first or primary SoC,
  * so 2708 has historically been used rather than a dedicated 2835 ID.

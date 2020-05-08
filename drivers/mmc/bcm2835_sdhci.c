@@ -173,7 +173,7 @@ int bcm2835_sdhci_init(u32 regbase, u32 emmc_freq)
 	 * Multiply by 1000000 to get uS per two ticks.
 	 * +1 for hack rounding.
 	 */
-	bcm_host->twoticks_delay = ((10 * 1000000) / MIN_FREQ) + 1;
+	bcm_host->twoticks_delay = ((2 * 1000000) / MIN_FREQ) + 1;
 	bcm_host->last_write = 0;
 
 	host = &bcm_host->host;
