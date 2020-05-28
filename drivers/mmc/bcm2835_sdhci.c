@@ -83,7 +83,7 @@ static inline void bcm2835_sdhci_raw_writel(struct sdhci_host *host, u32 val,
 	 * 
 	 * Adding this 600us delay here appears to resolve the issue.
 	 */
-	udelay(600);
+	// udelay(600);
 }
 
 static inline u32 bcm2835_sdhci_raw_readl(struct sdhci_host *host, int reg)
