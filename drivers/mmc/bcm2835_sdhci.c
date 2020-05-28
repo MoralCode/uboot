@@ -81,9 +81,9 @@ static inline void bcm2835_sdhci_raw_writel(struct sdhci_host *host, u32 val,
 	 * to booting Linux. If the system is booted into Linux, and then reset,
 	 * the issue does not manifest....
 	 * 
-	 * Adding this 450us delay here appears to resolve the issue.
+	 * Adding this 600us delay here appears to resolve the issue.
 	 */
-	udelay(450);
+	udelay(600);
 }
 
 static inline u32 bcm2835_sdhci_raw_readl(struct sdhci_host *host, int reg)
@@ -196,6 +196,6 @@ int bcm2835_sdhci_init(u32 regbase, u32 emmc_freq)
 
 	host->version = sdhci_readw(host, SDHCI_HOST_VERSION);
 	add_sdhci(host, emmc_freq, MIN_FREQ);
-
+	
 	return 0;
 }
