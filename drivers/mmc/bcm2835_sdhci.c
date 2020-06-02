@@ -69,21 +69,14 @@ static inline void bcm2835_sdhci_raw_writel(struct sdhci_host *host, u32 val,
 	 * (Which is just as well - otherwise we'd have to nobble the DMA engine
 	 * too)
 	 */
-	while (timer_get_us() - bcm_host->last_write < bcm_host->twoticks_delay)
-		;
+	if (reg != SDHCI_BUFFER) {
+		while (timer_get_us() - bcm_host->last_write <
+		       bcm_host->twoticks_delay)
+			;
+	}
 
 	writel(val, host->ioaddr + reg);
 	bcm_host->last_write = timer_get_us();
-
-	/*
-	 * The Raspberry Pi Zero SDHCI interface has a bug where it fails to send
-	 * commands to the MMC when the system has first powered up and prior
-	 * to booting Linux. If the system is booted into Linux, and then reset,
-	 * the issue does not manifest....
-	 * 
-	 * Adding this 600us delay here appears to resolve the issue.
-	 */
-	// udelay(600);
 }
 
 static inline u32 bcm2835_sdhci_raw_readl(struct sdhci_host *host, int reg)

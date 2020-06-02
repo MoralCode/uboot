@@ -10,6 +10,21 @@
 #include "kubos-common.h"
 #include <asm/arch/timer.h>
 #include <linux/sizes.h>
+#include <config_distro_defaults.h>
+#include <config_distro_bootcmd.h>
+
+/* Undo things we don't want to include from the base rpi configuration */
+#undef CONFIG_BOOTCOMMAND
+#undef BOOT_TARGET_DEVICES
+#undef CONFIG_EXTRA_ENV_SETTINGS
+#undef CONFIG_ENV_IS_IN_MMC
+#undef CONFIG_ENV_IS_IN_FAT
+#undef CONFIG_ENV_IS_NOWHERE
+#undef CONFIG_ENV_SIZE
+#undef DFU_ALT_INFO_MMC
+#undef DFU_ALT_INFO_NOR
+#undef CONFIG_BOOTCOUNT_AM33XX
+/* End of undefs */
 
 #if defined(CONFIG_TARGET_RPI_2) || defined(CONFIG_TARGET_RPI_3_32B)
 #define CONFIG_SKIP_LOWLEVEL_INIT
@@ -139,12 +154,13 @@
 #endif
 
 /* Environment */
-#define CONFIG_ENV_SIZE SZ_16K
+/* #define CONFIG_ENV_SIZE SZ_16K */
 #define CONFIG_EXT4_WRITE
-#define CONFIG_ENV_IS_IN_EXT4 1
-#define EXT4_ENV_INTERFACE "mmc"
+#define CONFIG_ENV_IS_IN_EXT4    1
+#define EXT4_ENV_INTERFACE       "mmc"
 #define EXT4_ENV_DEVICE_AND_PART "0:3"
-#define EXT4_ENV_FILE "/uboot.env"
+#define EXT4_ENV_FILE            "/uboot.env"
+#define CONFIG_ENV_SIZE         10 * 1024 /* Assume sector size of 1024 */
 /* #define CONFIG_ENV_VARS_UBOOT_CONFIG */
 #define CONFIG_SYS_LOAD_ADDR 0x1000000
 /* #define CONFIG_CONSOLE_MUX */
@@ -163,8 +179,6 @@
 #define CONFIG_SETUP_MEMORY_TAGS
 #define CONFIG_CMDLINE_TAG
 #define CONFIG_INITRD_TAG
-
-#include <config_distro_defaults.h>
 
 /* Environment */
 #define CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
@@ -213,7 +227,6 @@
     "ramdisk_addr_r=0x02100000\0"
 
 #define BOOT_TARGET_DEVICES(func) func(MMC, mmc, 0) func(USB, usb, 0) func(PXE, pxe, na) func(DHCP, dhcp, na)
-#include <config_distro_bootcmd.h>
 
 #define CONFIG_BOOTCOMMAND                                                                                             \
     "if mmc rescan; then "                                                                                             \
