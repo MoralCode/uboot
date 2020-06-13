@@ -40,9 +40,6 @@
 #define CONFIG_SYS_TIMER_COUNTER (&((struct bcm2835_timer_regs *)BCM2835_TIMER_PHYSADDR)->clo)
 #endif
 
-#undef DFU_ALT_INFO_MMC
-#undef DFU_ALT_INFO_NOR
-
 /*
  * 2835 is a SKU in a series for which the 2708 is the first or primary SoC,
  * so 2708 has historically been used rather than a dedicated 2835 ID.
@@ -75,7 +72,7 @@
  */
 #define CONFIG_SYS_SDRAM_SIZE SZ_128M
 #define CONFIG_SYS_INIT_SP_ADDR (CONFIG_SYS_SDRAM_BASE + CONFIG_SYS_SDRAM_SIZE - GENERATED_GBL_DATA_SIZE)
-#define CONFIG_SYS_MALLOC_LEN SZ_4M
+#define CONFIG_SYS_MALLOC_LEN SZ_8M
 #define CONFIG_SYS_MEMTEST_START 0x00100000
 #define CONFIG_SYS_MEMTEST_END 0x00200000
 #define CONFIG_LOADADDR 0x00200000
@@ -136,23 +133,6 @@
 #define CONFIG_SYS_CBSIZE 1024
 #define CONFIG_SYS_PBSIZE (CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
 
-/* File updates */
-#ifdef CONFIG_UPDATE_KUBOS
-#define CONFIG_SYS_DFU_DATA_BUF_SIZE 500 * SZ_1K /* File transfer chunk size */
-#define CONFIG_SYS_DFU_MAX_FILE_SIZE 4 * SZ_1M   /* Maximum size for a single file.  Currently zImage (~2.5M) */
-
-#define KUBOS_UPGRADE_DEVICE 0
-#define KUBOS_UPGRADE_PART 1
-#define KUBOS_UPGRADE_STORAGE CONFIG_SYS_SDRAM_BASE + 0x200 /* Temporary SDRAM storage location */
-
-/* DFU Configuration */
-#define DFU_ALT_INFO_MMC ""
-#define DFU_ALT_INFO_NOR ""
-#else
-#define DFU_ALT_INFO_MMC ""
-#define DFU_ALT_INFO_NOR ""
-#endif
-
 /* Environment */
 /* #define CONFIG_ENV_SIZE SZ_16K */
 #define CONFIG_EXT4_WRITE
@@ -166,6 +146,32 @@
 /* #define CONFIG_CONSOLE_MUX */
 /* #define CONFIG_SYS_CONSOLE_IS_IN_ENV */
 /* #define CONFIG_PREBOOT "usb start" */
+
+/* File updates */
+#ifdef CONFIG_UPDATE_KUBOS
+#define CONFIG_SYS_DFU_DATA_BUF_SIZE 500 * SZ_1K /* File transfer chunk size */
+#define CONFIG_SYS_DFU_MAX_FILE_SIZE 5 * SZ_1M   /* Maximum size for a single file.  Currently zImage (~2.5M) */
+
+#define KUBOS_UPGRADE_DEVICE 0
+#define KUBOS_UPGRADE_PART 6
+#define KUBOS_UPGRADE_STORAGE CONFIG_SYS_SDRAM_BASE + 0x200 /* Temporary SDRAM storage location */ 
+#define CONFIG_FAT_WRITE
+
+/* DFU Configuration */
+#define DFU_ALT_INFO_MMC \
+    "dfu_alt_info_mmc="         \
+    "kernel fat 0 1;"       \
+    "rootfs part 0 2;" \
+    "uboot fat 0 1;" \
+    "bcm2708-rpi-zero.dtb fat 0 1" \
+    "\0"
+
+#define DFU_ALT_INFO_NOR ""
+#else
+#define DFU_ALT_INFO_MMC ""
+#define DFU_ALT_INFO_NOR ""
+#endif
+
 
 /* Shell */
 #define CONFIG_SYS_MAXARGS 16
